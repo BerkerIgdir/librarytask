@@ -20,7 +20,7 @@ public class Book extends BaseEntity{
     String secondaryName;
     @Column(length = 36, columnDefinition = "varchar(36)")
     String series;
-    @Column(length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)
+    @Column(length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false,unique = true)
     String isbnNumber;
     @Column(length = 150, columnDefinition = "varchar(150)", nullable = false)
     String description;
