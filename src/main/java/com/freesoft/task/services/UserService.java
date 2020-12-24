@@ -10,4 +10,5 @@ public interface UserService {
     User getUserByEmail(String email);
     void save(User user);
     Page<User> getAllUsers(Pageable pageable);
+
 }

@@ -71,14 +71,4 @@ class BookMapperTest {
 
     }
 
-    @Test
-    void testStackOverflow(){
-
-
-
-        Publisher publisher = publisherMapper.toPublisher(publisherDto);
-
-        assertTrue(publisher.getBooks().contains(book));
-
-    }
 }

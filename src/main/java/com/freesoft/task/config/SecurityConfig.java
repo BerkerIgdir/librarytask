@@ -1,5 +1,6 @@
 package com.freesoft.task.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -17,13 +18,15 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private UserDetailsService MyDetailsService;
+    private  UserDetailsService MyDetailsService;
 
     @Autowired
-    private DataSource dataSource;
+    private  DataSource dataSource;
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

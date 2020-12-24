@@ -6,6 +6,7 @@ import com.freesoft.task.entities.Publisher;
 import com.freesoft.task.services.AuthorService;
 import com.freesoft.task.services.BookService;
 import com.freesoft.task.services.PublisherService;
+import lombok.RequiredArgsConstructor;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,36 +19,44 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MockMvcBuilder;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 
 import java.util.Arrays;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 
+@RequiredArgsConstructor
 @AutoConfigureTestDatabase
 @WebMvcTest(controllers = LibraryController.class)
 class LibraryControllerTest {
 
     @Autowired
+    private final WebApplicationContext context;
+
     private MockMvc mockMvc;
 
     @MockBean
-    private BookService bookService;
+    private final BookService bookService;
 
     @MockBean
-    private AuthorService authorService;
+    private final AuthorService authorService;
 
     @MockBean
-    private PublisherService publisherService;
+    private final PublisherService publisherService;
 
     @MockBean
     private Map<String,Object> model;
@@ -72,6 +81,7 @@ class LibraryControllerTest {
 
         bookPage = new PageImpl<>(Arrays.asList(book), PageRequest.of(0,10),1);
 
+        mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(SecurityMockMvcConfigurers.springSecurity()).build();
     }
 
     @Test
@@ -87,10 +97,8 @@ class LibraryControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "admin", roles = {"USER","ADMIN"})
+    @WithMockUser(roles = "ADMIN")
     void bookSave() throws Exception {
-
-        //Geri dönülüp tekrar test edilecek.
 
         mockMvc.perform(post("/books/save")
                 .param("name","Kitap")
@@ -98,13 +106,18 @@ class LibraryControllerTest {
                 .param("author.name","Berker")
                 .param("author.surname","Igdir")
                 .param("publisher.name","Epsilon")
-                .param("isbn","L123"))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists("book"));
+                .param("isbn","L123").with(csrf()))
+                .andExpect(redirectedUrl("/books/list"));
 
     }
 
     @Test
-    void bookdelete() {
+    @WithMockUser(roles = "ADMIN")
+    void bookDelete() throws Exception {
+
+        mockMvc.perform(get("/books/delete")
+                .param("bookId","1").with(csrf()))
+                .andExpect(redirectedUrl("/books/list"));
+
     }
 }

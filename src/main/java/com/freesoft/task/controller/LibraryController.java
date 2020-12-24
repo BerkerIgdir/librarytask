@@ -152,7 +152,7 @@ public class LibraryController {
     }
 
     @GetMapping("books/delete")
-    String bookdelete(@RequestParam("bookId") Long id){
+    String bookDelete(@RequestParam("bookId") Long id){
 
         Book book = bookService.getBookById(id);
 
