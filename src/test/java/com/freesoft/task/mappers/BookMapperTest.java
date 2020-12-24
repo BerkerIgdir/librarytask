@@ -1,7 +1,9 @@
 package com.freesoft.task.mappers;
 
 import com.freesoft.task.dtos.BookDto;
+import com.freesoft.task.dtos.PublisherDto;
 import com.freesoft.task.entities.Book;
+import com.freesoft.task.entities.Publisher;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,14 +21,29 @@ class BookMapperTest {
 
     private BookDto bookDto;
 
+    private PublisherDto publisherDto;
+
     @Autowired
     private BookMapper bookMapper;
 
+    @Autowired
+    private PublisherMapper publisherMapper;
+
     @BeforeEach
     void setUp() {
-        book = Book.builder().name("der Steppenwolf").id(1L).build();
 
-        bookDto = bookMapper.toDto(book);
+//        book = Book.builder().name("der Steppenwolf").id(1L).build();
+
+        publisherDto = PublisherDto.builder().name("Penguin").build();
+
+//        AuthorDto authorDto = AuthorDto.builder().name("Franz").surname("Kafka").build();
+
+        bookDto = BookDto.builder().name("die Verwandlung").description("ein Buch")
+                .isbn("L123131").publisher(publisherDto).build();
+
+
+        Publisher publisher = publisherMapper.toPublisher(publisherDto);
+
 
     }
 
@@ -44,10 +61,22 @@ class BookMapperTest {
 
         bookDto.setName("die Angst");
 
+        Publisher publisher = publisherMapper.toPublisher(publisherDto);
+
         book = bookMapper.toBook(bookDto);
 
         assertNotNull(book);
-
+        assertEquals(publisher.getName(),book.getPublisher().getName());
         assertEquals("die Angst",book.getName());
+
+    }
+
+    @Test
+    void testStackOverflow(){
+
+        Publisher publisher = publisherMapper.toPublisher(publisherDto);
+
+        assertTrue(publisher.getBooks().contains(book));
+
     }
 }

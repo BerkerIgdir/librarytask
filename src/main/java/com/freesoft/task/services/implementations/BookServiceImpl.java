@@ -1,21 +1,24 @@
 package com.freesoft.task.services.implementations;
 
-import com.freesoft.task.dtos.BookDto;
-import com.freesoft.task.mappers.BookMapper;
+
+import com.freesoft.task.entities.Author;
+import com.freesoft.task.entities.Book;
+import com.freesoft.task.entities.Publisher;
+import com.freesoft.task.repositories.AuthorRepository;
 import com.freesoft.task.repositories.BookRepository;
+import com.freesoft.task.repositories.PublisherRepository;
 import com.freesoft.task.services.BookService;
 import com.freesoft.task.services.exceptions.BookNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
+
 
 @Slf4j
 @Service
@@ -24,62 +27,91 @@ import java.util.stream.Collectors;
 public class BookServiceImpl implements BookService {
 
     @Autowired
-   private final BookMapper bookMapper;
+    private final BookRepository bookRepository;
+
     @Autowired
-   private final BookRepository bookRepository;
+    private final AuthorRepository authorRepository;
+
+    @Autowired
+    private final PublisherRepository publisherRepository;
+
 
     @Override
-    public Page<BookDto> getAllBooks(Pageable pageable) {
+    public Page<Book> getAllBooks(Pageable pageable) {
 
-        List<BookDto> bookDtoList = bookRepository.findAll()
-                .stream()
-                .map(bookMapper::toDto)
-                .collect(Collectors.toList());
-
-        return new PageImpl<>(bookDtoList,pageable,bookDtoList.size());
-    }
-
-    @Override
-    public Page<BookDto> getBooksByAuthor(String author, Pageable pageable) {
-
-        List<BookDto> bookDtoList = bookRepository.findByAuthor(author)
-                .stream()
-                .map(bookMapper::toDto)
-                .collect(Collectors.toList());
-
-        return new PageImpl<>(bookDtoList,pageable,bookDtoList.size());
-    }
-
-    @Override
-    public Page<BookDto> getBooksByPublisher(String publisher, Pageable pageable) {
-
-        List<BookDto> bookDtoList = bookRepository.findByPublisher(publisher)
-                .stream()
-                .map(bookMapper::toDto)
-                .collect(Collectors.toList());
-
-        return new PageImpl<>(bookDtoList,pageable,bookDtoList.size());
-    }
-
-    @Override
-    public Page<BookDto> getBooksByPublisherAndAuthor(String publisher, String author, Pageable pageable) {
-
-        List<BookDto> bookDtoList = bookRepository.findByPublisherAndAuthor(publisher,author)
-                .stream()
-                .map(bookMapper::toDto)
-                .collect(Collectors.toList());
-
-        return new PageImpl<>(bookDtoList,pageable,bookDtoList.size());
+        bookRepository.findAll(pageable).stream().forEach(book -> log.info(book.getName()));
+        return bookRepository.findAll(pageable);
 
     }
 
     @Override
-    public BookDto getBookByName(String name) {
-        return bookMapper.toDto(bookRepository.findByName(name).orElseThrow(BookNotFoundException::new));
+    public Page<Book> getBooksByAuthor(String author, Pageable pageable) {
+
+
+        return bookRepository.findByAuthor(author,pageable);
+
     }
 
     @Override
-    public BookDto getBookByISBN(String isbn) {
-        return bookMapper.toDto(bookRepository.findByIsbn(isbn).orElseThrow(BookNotFoundException::new));
+    public Page<Book> getBooksByPublisher(String publisher, Pageable pageable) {
+
+
+
+        return bookRepository.findByPublisher(publisher,pageable);
+
+    }
+
+    @Override
+    public Page<Book> getBooksByPublisherAndAuthor(String publisher, String author, Pageable pageable) {
+
+        return bookRepository.findByPublisherAndAuthor(publisher,author,pageable);
+
+    }
+
+    @Override
+    public Page<Book> getBooksByName(String name,Pageable pageable) {
+
+
+        return bookRepository.findByName(name,pageable);
+
+    }
+
+
+    @Override
+    public Book getBookByISBN(String isbn) {
+        return bookRepository.findByIsbn(isbn).orElseThrow(BookNotFoundException::new);
+    }
+
+    @Override
+    public Book getBookById(Long id) {
+        return bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
+    }
+
+    @Override
+    public void save(Book book) {
+
+       Author author = authorRepository.findByNameAndSurname(book.getAuthor().getName(),book.getAuthor().getSurname())
+               .orElseGet(() ->Author.builder().name(book.getAuthor().getName()).surname(book.getAuthor().getSurname()).build());
+
+       Publisher publisher = publisherRepository.findByName(book.getPublisher().getName())
+               .orElseGet(() ->Publisher.builder().name(book.getPublisher().getName()).build());
+
+       author.addBooks(book);
+       publisher.addBook(book);
+
+       publisherRepository.save(publisher);
+       authorRepository.save(author);
+    }
+
+    @Override
+    public void delete(Book book) {
+        Author author = authorRepository.findByNameAndSurname(book.getAuthor().getName(),book.getAuthor().getSurname()).get();
+        author.getBooks().remove(book);
+        Publisher publisher = publisherRepository.findByName(book.getPublisher().getName()).get() ;
+        publisher.getBooks().remove(book);
+
+        bookRepository.delete(book);
+        publisherRepository.save(publisher);
+        authorRepository.save(author);
     }
 }

@@ -1,14 +1,16 @@
 package com.freesoft.task.entities;
 
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
-@Data
+
+@Getter
+@Setter
 @Entity
 @SuperBuilder
 @NoArgsConstructor
@@ -17,9 +19,31 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Publisher extends BaseEntity {
 
-    @Column(length = 36, columnDefinition = "varchar(36)",  nullable = false,unique = true)
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    Long id;
+
+    @Column(length = 36, columnDefinition = "varchar(36)",  nullable = false)
     String name;
 
-    @OneToMany(mappedBy = "publisher")
-    Set<Book> books = new HashSet<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "publisher",fetch = FetchType.EAGER)
+    List<Book> books = new ArrayList<>();
+
+   public void addBook(Book book){
+
+       Optional<Book> bookToUpdate = books.stream().filter(book1 -> book1.getId().equals(book.getId())).findFirst();
+
+       if( bookToUpdate.isPresent()){
+           int index = books.indexOf(bookToUpdate.get());
+           books.set(index,book);
+       }
+       else {
+           books.add(book);
+       }
+        books.add(book);
+        book.setPublisher(this);
+    }
+
 }

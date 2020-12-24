@@ -1,8 +1,6 @@
 package com.freesoft.task.dtos;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.freesoft.task.entities.Author;
-import com.freesoft.task.entities.Publisher;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import javax.validation.constraints.NotBlank;
@@ -23,15 +21,16 @@ public class BookDto {
     String secondaryName;
     String series;
     @NotBlank(message = "ISBN number can not be left null")
-    String isbnNumber;
+    String isbn;
     @NotBlank(message = "Every book must have a description")
     String description;
 
-    int count;
+    @Builder.Default
+    int count = 1;
 
     @NotNull(message = "Every book has at least an author")
-    Author author;
+    AuthorDto author;
     @NotNull(message = "Every book has at least an author")
-    Publisher publisher;
+    PublisherDto publisher;
 
 }

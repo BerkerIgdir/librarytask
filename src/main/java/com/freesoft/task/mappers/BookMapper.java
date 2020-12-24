@@ -6,8 +6,10 @@ import org.mapstruct.Mapper;
 
 // A simple mapper, it can be customized via various methods.
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",uses = {AuthorMapper.class, PublisherMapper.class})
 public interface BookMapper {
+
     BookDto toDto(Book book);
     Book toBook(BookDto bookDto);
+
 }

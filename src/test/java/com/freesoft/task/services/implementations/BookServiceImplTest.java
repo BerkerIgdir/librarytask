@@ -1,8 +1,6 @@
 package com.freesoft.task.services.implementations;
 
-import com.freesoft.task.dtos.BookDto;
 import com.freesoft.task.entities.Book;
-import com.freesoft.task.mappers.BookMapper;
 import com.freesoft.task.repositories.BookRepository;
 import com.freesoft.task.services.exceptions.BookNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,11 +10,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -33,13 +32,13 @@ class BookServiceImplTest {
     @Mock
     private BookRepository bookRepository;
 
-    @Mock
-    private BookMapper bookMapper;
+//    @Mock
+//    private BookMapper bookMapper;
 
     @InjectMocks
     private BookServiceImpl bookService;
 
-    private List<Book> bookList;
+    private Page<Book> bookList;
 
     @BeforeEach
     void setUp() {
@@ -48,82 +47,82 @@ class BookServiceImplTest {
 
         Book book1 = Book.builder().id(1L).name("Efe Aras").isbn("adfafa").description("Aciklama2").build();
 
-        bookList =Arrays.asList(book,book1);
+        bookList = new PageImpl<>(Arrays.asList(book,book1),PageRequest.of(1,5),2);
 
     }
 
     @Test
     void getAllBooks() {
 
-        given(bookRepository.findAll()).willReturn(bookList);
-        given(bookMapper.toDto(any(Book.class))).willReturn(BookDto.builder().build());
+        given(bookRepository.findAll(any(Pageable.class))).willReturn(bookList);
+        given(any(Book.class)).willReturn(Book.builder().build());
 
-        Page<BookDto> bookDtoPage = bookService.getAllBooks(PageRequest.of(1,5));
+//        Page<Book> bookPage = bookService.getAllBooks(PageRequest.of(1,5));
 
         then(bookRepository).should(times(1)).findAll();
-        then(bookMapper).should(times(2)).toDto(any(Book.class));
+
 
     }
 
     @Test
     void getBooksByAuthor() {
 
-        given(bookRepository.findByAuthor("Tolstoy")).willReturn(bookList);
-        given(bookMapper.toDto(any(Book.class))).willReturn(BookDto.builder().build());
+        given(bookRepository.findByAuthor("Tolstoy",any(Pageable.class))).willReturn(bookList);
+        given(any(Book.class)).willReturn(Book.builder().build());
 
-        Page<BookDto> bookDtoPage = bookService.getBooksByAuthor("Tolstoy",PageRequest.of(1,5));
+//        Page<Book> bookPage = bookService.getBooksByAuthor("Tolstoy",PageRequest.of(1,5));
 
-        then(bookRepository).should(times(1)).findByAuthor("Tolstoy");
-        then(bookMapper).should(times(2)).toDto(any(Book.class));
+        then(bookRepository).should(times(1)).findByAuthor("Tolstoy",any(Pageable.class));
+
 
     }
 
     @Test
     void getBooksByPublisher() {
 
-        given(bookRepository.findByAuthor("Tolstoy")).willReturn(bookList);
-        given(bookMapper.toDto(any(Book.class))).willReturn(BookDto.builder().build());
+        given(bookRepository.findByAuthor("Tolstoy",any(Pageable.class))).willReturn(bookList);
+        given(any(Book.class)).willReturn(Book.builder().build());
 
-        Page<BookDto> bookDtoPage = bookService.getBooksByAuthor("Tolstoy",PageRequest.of(1,5));
+//        Page<Book> bookDtoPage = bookService.getBooksByAuthor("Tolstoy",PageRequest.of(1,5));
 
-        then(bookRepository).should(times(1)).findByAuthor("Tolstoy");
-        then(bookMapper).should(times(2)).toDto(any(Book.class));
+        then(bookRepository).should(times(1)).findByAuthor("Tolstoy",PageRequest.of(1,5));
+
 
     }
 
     @Test
     void getBooksByPublisherAndAuthor() {
 
-        given(bookRepository.findByPublisherAndAuthor("Tolstoy","Penguin")).willReturn(bookList);
-        given(bookMapper.toDto(any(Book.class))).willReturn(BookDto.builder().build());
+        given(bookRepository.findByPublisherAndAuthor("Tolstoy","Penguin",any(Pageable.class))).willReturn(bookList);
+        given(any(Book.class)).willReturn(Book.builder().build());
 
-        Page<BookDto> bookDtoPage = bookService.getBooksByPublisherAndAuthor("Tolstoy","Penguin",PageRequest.of(1,5));
+//        Page<Book> bookPage = bookService.getBooksByPublisherAndAuthor("Tolstoy","Penguin",PageRequest.of(1,5));
 
-        then(bookRepository).should(times(1)).findByPublisherAndAuthor("Tolstoy","Penguin");
-        then(bookMapper).should(times(2)).toDto(any(Book.class));
+        then(bookRepository).should(times(1)).findByPublisherAndAuthor("Tolstoy","Penguin",any(Pageable.class));
+
 
     }
 
     @Test
     void getBookByName() {
 
-        given(bookRepository.findByName("Tolstoy")).willReturn(Optional.of(bookList.get(0)));
-        given(bookMapper.toDto(any(Book.class))).willReturn(BookDto.builder().build());
+        given(bookRepository.findByName("Tolstoy",any(Pageable.class))).willReturn(bookList);
+        given(any(Book.class)).willReturn(Book.builder().build());
 
-        BookDto bookDtoPage = bookService.getBookByName("Tolstoy");
+//        Page<Book> bookPage = bookService.getBooksByName("Tolstoy",PageRequest.of(1,5));
 
-        then(bookRepository).should(times(1)).findByName("Tolstoy");
-        then(bookMapper).should(times(1)).toDto(any(Book.class));
+        then(bookRepository).should(times(1)).findByName("Tolstoy",any(Pageable.class));
+
     }
 
     @Test
-    void getBookByNameThrowsException() {
+    void getBookByIsbnThrowsException() {
 
-        willThrow(BookNotFoundException.class).given(bookRepository).findByName(any(String.class));
+        willThrow(BookNotFoundException.class).given(bookRepository).findByIsbn(any(String.class));
 
 
         try{
-            bookService.getBookByName("Tolstoy");
+            bookService.getBookByISBN("Tolstoy");
         }
         catch (Exception e){
             System.out.println(e);
@@ -133,13 +132,13 @@ class BookServiceImplTest {
     @Test
     void getBookByISBN() {
 
-        given(bookRepository.findByIsbn("Tolstoy")).willReturn(Optional.of(bookList.get(0)));
-        given(bookMapper.toDto(any(Book.class))).willReturn(BookDto.builder().build());
+        given(bookRepository.findByIsbn("Tolstoy")).willReturn(Optional.of(bookList.toList().get(0)));
+        given(any(Book.class)).willReturn(Book.builder().build());
 
-        BookDto bookDtoPage = bookService.getBookByISBN("Tolstoy");
+//        Book bookPage = bookService.getBookByISBN("Tolstoy");
 
         then(bookRepository).should(times(1)).findByIsbn("Tolstoy");
-        then(bookMapper).should(times(1)).toDto(any(Book.class));
+
 
     }
 }

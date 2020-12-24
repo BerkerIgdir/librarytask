@@ -19,11 +19,11 @@ import java.sql.Timestamp;
 public class BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    protected Long id;
 
     @CreationTimestamp
+    @Column(updatable = false)
     private Timestamp createdAt;
 
     @UpdateTimestamp

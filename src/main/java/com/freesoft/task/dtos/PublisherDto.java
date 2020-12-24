@@ -1,11 +1,9 @@
 package com.freesoft.task.dtos;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,9 +19,9 @@ public class PublisherDto {
 
     @NotBlank(message = "Name can not be blank")
     String name;
-
-    @NotNull(message = "This field can not be left null")
-    @NotEmpty(message = "Every publisher must have at least one book published")
-    Set<BookDto> bookDtos = new HashSet<>();
+    // This feature was removed during development period because of the complexity it requires
+//    @Builder.Default
+//    @NotEmpty(message = "Every publisher must have at least one book published")
+//    Set<BookDto> books = new HashSet<>();
 
 }

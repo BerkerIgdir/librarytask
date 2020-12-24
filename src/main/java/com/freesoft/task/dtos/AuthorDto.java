@@ -27,8 +27,11 @@ public class AuthorDto {
     @NotBlank(message = "Surname can not be blank")
     String surname;
 
-    @NotNull(message = "This field can not be left null")
-    @NotEmpty(message = "Every author must have at least one book")
-    Set<Book> books = new HashSet<>();
+
+
+    // This feature was removed during development period because of the complexity it requires.
+//    @Builder.Default
+//    @NotEmpty(message = "Every author must have at least one book")
+//    Set<BookDto> books = new HashSet<>();
 
 }

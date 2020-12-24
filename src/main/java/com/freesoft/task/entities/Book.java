@@ -6,15 +6,20 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
 @Entity
 @SuperBuilder
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Book extends BaseEntity{
+//
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    long id;
 
-    @Column(length = 36, columnDefinition = "varchar(36)",  nullable = false,unique = true)
+    @Column(length = 36, columnDefinition = "varchar(36)",  nullable = false)
     String name;
     @Column(length = 36, columnDefinition = "varchar(36)" )
     String secondaryName;
@@ -24,16 +29,14 @@ public class Book extends BaseEntity{
     String isbn;
     @Column(length = 150, columnDefinition = "varchar(150)", nullable = false)
     String description;
-    @Column
-    int count;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id")
+    @JoinColumn(name = "author_id",nullable = false)
     Author author;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "publisher_id")
+    @JoinColumn(name = "publisher_id",nullable = false)
     Publisher  publisher;
 
 }

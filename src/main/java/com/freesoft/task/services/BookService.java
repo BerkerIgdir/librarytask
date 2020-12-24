@@ -2,6 +2,7 @@ package com.freesoft.task.services;
 
 
 import com.freesoft.task.dtos.BookDto;
+import com.freesoft.task.entities.Book;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -9,12 +10,14 @@ import org.springframework.data.domain.Pageable;
 
 public interface BookService {
 
-    Page<BookDto> getAllBooks(Pageable pageable);
-    Page<BookDto> getBooksByAuthor(String author,Pageable pageable);
-    Page<BookDto> getBooksByPublisher(String publisher,Pageable pageable);
-    Page<BookDto> getBooksByPublisherAndAuthor(String publisher,String author,Pageable pageable);
+    Page<Book> getAllBooks(Pageable pageable);
+    Page<Book> getBooksByAuthor(String author,Pageable pageable);
+    Page<Book> getBooksByPublisher(String publisher,Pageable pageable);
+    Page<Book> getBooksByPublisherAndAuthor(String publisher,String author,Pageable pageable);
 
-    BookDto getBookByName(String name);
-    BookDto getBookByISBN(String isbn);
-
+    Page<Book> getBooksByName(String name,Pageable pageable);
+    Book getBookByISBN(String isbn);
+    Book getBookById(Long id);
+    void save(Book book);
+    void delete(Book book);
 }

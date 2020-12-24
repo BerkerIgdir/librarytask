@@ -1,7 +1,7 @@
 package com.freesoft.task.services.implementations;
 
-import com.freesoft.task.dtos.PublisherDto;
-import com.freesoft.task.mappers.PublisherMapper;
+
+import com.freesoft.task.entities.Publisher;
 import com.freesoft.task.repositories.PublisherRepository;
 import com.freesoft.task.services.PublisherService;
 import com.freesoft.task.services.exceptions.PublisherNotFoundException;
@@ -18,11 +18,21 @@ public class PublisherServiceImpl implements PublisherService {
 
     @Autowired
     private final PublisherRepository publisherRepository;
-    @Autowired
-    private final PublisherMapper publisherMapper;
 
     @Override
-    public PublisherDto getPublisherByName(String name) {
-        return publisherMapper.toDto(publisherRepository.findByName(name).orElseThrow(PublisherNotFoundException::new));
+    public Publisher getPublisherByName(String name) {
+        return publisherRepository.findByName(name).orElseThrow(PublisherNotFoundException::new);
     }
+
+    @Override
+    public void delete(Publisher publisher) {
+        publisherRepository.delete(publisher);
+    }
+
+    @Override
+    public void save(Publisher publisher) {
+        publisherRepository.save(publisher);
+    }
+
+
 }
