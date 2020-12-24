@@ -32,9 +32,6 @@ class BookServiceImplTest {
     @Mock
     private BookRepository bookRepository;
 
-//    @Mock
-//    private BookMapper bookMapper;
-
     @InjectMocks
     private BookServiceImpl bookService;
 
@@ -55,63 +52,55 @@ class BookServiceImplTest {
     void getAllBooks() {
 
         given(bookRepository.findAll(any(Pageable.class))).willReturn(bookList);
-        given(any(Book.class)).willReturn(Book.builder().build());
 
-//        Page<Book> bookPage = bookService.getAllBooks(PageRequest.of(1,5));
+        Page<Book> bookPage = bookService.getAllBooks(PageRequest.of(1,5));
 
-        then(bookRepository).should(times(1)).findAll();
-
+        then(bookRepository).should(times(1)).findAll(any(Pageable.class));
 
     }
 
     @Test
     void getBooksByAuthor() {
 
-        given(bookRepository.findByAuthor("Tolstoy",any(Pageable.class))).willReturn(bookList);
-        given(any(Book.class)).willReturn(Book.builder().build());
+        given(bookRepository.findByAuthor(anyString(),any(Pageable.class))).willReturn(bookList);
 
-//        Page<Book> bookPage = bookService.getBooksByAuthor("Tolstoy",PageRequest.of(1,5));
+        bookService.getBooksByAuthor("Tolstoy",PageRequest.of(1,5));
 
-        then(bookRepository).should(times(1)).findByAuthor("Tolstoy",any(Pageable.class));
-
+        then(bookRepository).should(times(1)).findByAuthor(anyString(),any(Pageable.class));
 
     }
 
     @Test
     void getBooksByPublisher() {
 
-        given(bookRepository.findByAuthor("Tolstoy",any(Pageable.class))).willReturn(bookList);
-        given(any(Book.class)).willReturn(Book.builder().build());
+        given(bookRepository.findByPublisher(anyString(),any(Pageable.class))).willReturn(bookList);
 
-//        Page<Book> bookDtoPage = bookService.getBooksByAuthor("Tolstoy",PageRequest.of(1,5));
+        bookService.getBooksByPublisher("Tolstoy",PageRequest.of(1,5));
 
-        then(bookRepository).should(times(1)).findByAuthor("Tolstoy",PageRequest.of(1,5));
-
+        then(bookRepository).should(times(1)).findByPublisher(anyString(),any(Pageable.class));
 
     }
 
     @Test
     void getBooksByPublisherAndAuthor() {
 
-        given(bookRepository.findByPublisherAndAuthor("Tolstoy","Penguin",any(Pageable.class))).willReturn(bookList);
-        given(any(Book.class)).willReturn(Book.builder().build());
+        given(bookRepository.findByPublisherAndAuthor(anyString(),anyString(),any(Pageable.class))).willReturn(bookList);
 
-//        Page<Book> bookPage = bookService.getBooksByPublisherAndAuthor("Tolstoy","Penguin",PageRequest.of(1,5));
+        bookService.getBooksByPublisherAndAuthor("Tolstoy","Penguin",PageRequest.of(1,5));
 
-        then(bookRepository).should(times(1)).findByPublisherAndAuthor("Tolstoy","Penguin",any(Pageable.class));
-
+        then(bookRepository).should(times(1)).findByPublisherAndAuthor(anyString(),anyString(),any(Pageable.class));
 
     }
 
     @Test
     void getBookByName() {
 
-        given(bookRepository.findByName("Tolstoy",any(Pageable.class))).willReturn(bookList);
-        given(any(Book.class)).willReturn(Book.builder().build());
+        given(bookRepository.findByName(anyString(),any(Pageable.class))).willReturn(bookList);
 
-//        Page<Book> bookPage = bookService.getBooksByName("Tolstoy",PageRequest.of(1,5));
 
-        then(bookRepository).should(times(1)).findByName("Tolstoy",any(Pageable.class));
+        bookService.getBooksByName("Tolstoy",PageRequest.of(1,5));
+
+        then(bookRepository).should(times(1)).findByName(anyString(),any(Pageable.class));
 
     }
 
@@ -133,9 +122,8 @@ class BookServiceImplTest {
     void getBookByISBN() {
 
         given(bookRepository.findByIsbn("Tolstoy")).willReturn(Optional.of(bookList.toList().get(0)));
-        given(any(Book.class)).willReturn(Book.builder().build());
 
-//        Book bookPage = bookService.getBookByISBN("Tolstoy");
+        bookService.getBookByISBN("Tolstoy");
 
         then(bookRepository).should(times(1)).findByIsbn("Tolstoy");
 

@@ -25,14 +25,11 @@ public class LibraryController {
     @Autowired
     private final BookService bookService;
 
-    @Autowired
-    private final BookRepository bookRepository;
-
 
     @GetMapping("/")
     String mainMenu(Model model){
 
-        return "main";
+        return "redirect:/books/list";
     }
 
     @GetMapping("/list")

@@ -39,26 +39,19 @@ public class BookServiceImpl implements BookService {
     @Override
     public Page<Book> getAllBooks(Pageable pageable) {
 
-        bookRepository.findAll(pageable).stream().forEach(book -> log.info(book.getName()));
         return bookRepository.findAll(pageable);
-
     }
 
     @Override
     public Page<Book> getBooksByAuthor(String author, Pageable pageable) {
 
-
         return bookRepository.findByAuthor(author,pageable);
-
     }
 
     @Override
     public Page<Book> getBooksByPublisher(String publisher, Pageable pageable) {
 
-
-
         return bookRepository.findByPublisher(publisher,pageable);
-
     }
 
     @Override
