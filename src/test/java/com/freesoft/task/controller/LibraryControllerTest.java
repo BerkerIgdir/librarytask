@@ -45,18 +45,18 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 class LibraryControllerTest {
 
     @Autowired
-    private final WebApplicationContext context;
+    private WebApplicationContext context;
 
     private MockMvc mockMvc;
 
     @MockBean
-    private final BookService bookService;
+    private  BookService bookService;
 
     @MockBean
-    private final AuthorService authorService;
+    private  AuthorService authorService;
 
     @MockBean
-    private final PublisherService publisherService;
+    private  PublisherService publisherService;
 
     @MockBean
     private Map<String,Object> model;
