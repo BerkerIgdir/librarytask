@@ -1,5 +1,6 @@
 package com.freesoft.task.services.implementations;
 
+import com.freesoft.task.controller.LibraryController;
 import com.freesoft.task.entities.Book;
 import com.freesoft.task.repositories.BookRepository;
 import com.freesoft.task.services.exceptions.BookNotFoundException;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +27,7 @@ import static org.mockito.Mockito.times;
 
 // BDD test of service layer.
 //Test is only applied to this service implementation because the rest(author and publisher services) is virtually identical.
+
 
 @ExtendWith(MockitoExtension.class)
 class BookServiceImplTest {

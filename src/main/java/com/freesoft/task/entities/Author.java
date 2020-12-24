@@ -52,7 +52,6 @@ public class Author extends BaseEntity{
            books.add(book);
        }
         book.setAuthor(this);
-
    }
 
 }

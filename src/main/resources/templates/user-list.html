@@ -21,9 +21,9 @@
     <hr>
 
     <!-- Add a button -->
-    <a th:href="@{bookForm}"
+    <a th:href="@{/user/form}"
        class="btn btn-primary btn-sm mb-3">
-        Add Book
+        Add User
     </a>
     <a th:href="@{/main}"
        class="btn btn-primary btn-sm mb-3">
@@ -34,35 +34,29 @@
         <thead class="thead-dark">
         <tr>
             <th>Name</th>
-            <th>Description</th>
-            <th>Publisher</th>
-            <th>Author</th>
-            <th></th>
-            <th>ISBN</th>
-            <th></th>
-            <th></th>
+            <th>Surname</th>
+            <th>Role</th>
+
         </tr>
         </thead>
 
         <tbody>
-        <tr th:each="book : ${books}">
-            <td th:text="${book.name}" />
-            <td th:text="${book.description}" />
-            <td th:text="${book.publisher.name }" />
-            <td th:text="${book.author.name}"  />
-            <td th:text="${book.author.surname}" />
-            <td th:text="${book.isbn}" />
-            <td> <a  sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/books/bookFormForUpdate(bookId=${book.id})}"  class="btn btn-info btn-sm mb-3">Update</a> </td>
-            <td> <a  sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/books/delete(bookId=${book.id})}"  class="btn btn-info btn-sm mb-3">Delete</button></a> </td>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.name}" />
+            <td th:text="${user.surname}" />
+            <td th:text="${user.roles[0].role }" />
+
+<!--            <td> <a  sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/books/bookFormForUpdate(bookId=${book.id})}"  class="btn btn-info btn-sm mb-3">Update</a> </td>-->
+<!--            <td> <a  sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/books/delete(bookId=${book.id})}"  class="btn btn-info btn-sm mb-3">Delete</button></a> </td>-->
         </tr>
 
 
         </tbody>
     </table>
 
-    <div th:if="${books.totalPages > 0}" class="pagination"
+    <div th:if="${users.totalPages > 0}" class="pagination"
          th:each="pageNumber : ${pageNumbers}">
-        <a th:href="@{/books/list(size=${books.size}, page=${pageNumber})}"
+        <a th:href="@{/books/list(size=${users.size}, page=${pageNumber})}"
            th:text=${pageNumber}
            th:class="${pageNumber==books.number + 1} ? active"></a>
     </div>

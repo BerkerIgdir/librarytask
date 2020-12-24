@@ -38,11 +38,9 @@ public class ServiceIntegrationTest {
 
     @Test
     void save(){
-
-        author.addBooks(book);
-        publisher.addBook(book);
-        publisherService.save(publisher);
-        authorService.save(author);
+        book.setAuthor(author);
+        book.setPublisher(publisher);
+        bookService.save(book);
     }
 
 }

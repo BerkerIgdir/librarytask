@@ -4,7 +4,9 @@ import com.freesoft.task.entities.Role;
 import com.freesoft.task.repositories.RoleRepository;
 import com.freesoft.task.services.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class RoleServiceImpl implements RoleService {
 
     @Autowired
@@ -22,6 +24,7 @@ public class RoleServiceImpl implements RoleService {
         }
         else{
             role.setRole("ROLE_".concat(role.getRole()));
+            roleRepository.save(role);
         }
 
     }

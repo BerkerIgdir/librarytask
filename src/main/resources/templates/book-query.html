@@ -20,39 +20,23 @@
     <hr>
     <p class="h4 mb-4">Search Person</p>
 
-    <form action="#" th:action="@{/person/searchByNameAndSurname}"
-          th:object="${queryObject}" method="POST">
+    <form action="#" th:action="@{/books/query}"
+          th:object="${book}" method="POST">
+
 
         <div style="display:flex; flex-direction: row; align-items: baseline">
-            <input type="text" id = "name" name= "name" th:field ="*{name}"
-                   class="form-control mb-4 col-4" placeholder="First name">
+            <input type="text" id = "surname" name= "surname" th:field="*{name}"
+
+                   class="form-control mb-4 col-4" placeholder="Name">
             <span style="margin:5px">    </span>
             <button type="submit" class="btn btn-info col-2" formaction="searchByName">Search By Name</button>
-            <span th:text=${nameDescription} style="margin:5px"> </span>
+            <span th:text=${name} style="margin:5px"> </span>
         </div>
 
-        <p  th:if="${#fields.hasErrors('name')}"  th:errors="*{name}"></p>
-
-        <div style="display:flex; flex-direction: row; align-items: baseline">
-            <input type="text" id = "surname" name= "surname" th:field="*{surname}"
-
-                   class="form-control mb-4 col-4" placeholder="Last name">
-            <span style="margin:5px">    </span>
-            <button type="submit" class="btn btn-info col-2" formaction="searchBySurname">Search By Surname</button>
-            <span th:text=${surnameDescription} style="margin:5px"> </span>
-        </div>
-
-        <p th:if="${#fields.hasErrors('surname')}"  th:errors="*{surname}">
-            Name Error
-        </p>
-
-        <p th:text="${combinedDescription}" ></p>
-
-        <button type="submit" class="btn btn-info col-2">Search By Name And Surname</button>
     </form>
 
     <hr>
-    <a th:href="@{/person/list}">Person List</a>
+    <a th:href="@{/books/list}">Book List</a>
     <hr>
     <a th:href="@{/main}"> Main Menu</a>
 

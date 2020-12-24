@@ -9,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,5 +24,5 @@ public class Role extends BaseEntity{
     private String role;
 
     @ManyToMany(mappedBy = "roles")
-    private List< User > users;
+    private List< User > users = new ArrayList<>();
 }

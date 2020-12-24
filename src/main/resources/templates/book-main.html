@@ -1,6 +1,7 @@
 
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -18,27 +19,46 @@
 <div class = "container">
 
     <h1>
-        A blue giant ? or "The giant with blue eyes" ?
+       FREE-SOFT TASK
     </h1>
 
     <h2>
-        This task is implemented by Berker.
+        A task that is issued by related company.
     </h2>
-    <hr>
-    <a th:href="@{/books/bookForm}"
+
+    <hr sec:authorize="hasRole('ROLE_ADMIN')">
+
+    <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/books/bookForm}"
        class="btn btn-primary btn-sm mb-3">
         Add Book
     </a>
+
+    <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/user/form}"
+       class="btn btn-primary btn-sm mb-3">
+        Add User
+    </a>
+
     <hr>
+
     <a th:href="@{/books/list}"
        class="btn btn-primary btn-sm mb-3">
         List Books
     </a>
+
     <hr>
-    <a th:href="@{/books/query}"
+
+    <a th:href="@{/books/queryForm}"
        class="btn btn-primary btn-sm mb-3">
         Query Books
     </a>
+
+    <hr>
+
+    <a th:href="@{/login?logout}"
+       class="btn btn-primary btn-sm mb-3">
+        Log Out
+    </a>
+
 </div>
 </body>
 </html>

@@ -14,11 +14,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Slf4j
 @Controller
-@RequestMapping("/books")
 @RequiredArgsConstructor
 public class LibraryController {
 
@@ -26,26 +27,92 @@ public class LibraryController {
     private final BookService bookService;
 
 
-    @GetMapping("/")
-    String mainMenu(Model model){
+    @GetMapping("")
+    String redirectMenu(Model model){
 
-        return "redirect:/books/list";
+        return "redirect:/main";
     }
 
-    @GetMapping("/list")
-    String bookList(Model model,@RequestParam(defaultValue = "0") Integer pageNo,
-                    @RequestParam(defaultValue = "10") Integer pageSize){
+    @GetMapping("/main")
+    String mainMenu(Model model){
 
-        List<Book> books = bookService.getAllBooks(PageRequest.of(pageNo,pageSize)).stream().collect(Collectors.toList());
+        return "book-main";
+    }
 
 
+    @GetMapping("books/list")
+    String bookList(Model model,
+                    @RequestParam("page") Optional<Integer> page,
+                    @RequestParam("size") Optional<Integer> size)
+    {
+
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(5);
+
+        Page<Book> books = bookService.getAllBooks(PageRequest.of(currentPage - 1,pageSize));
 
         model.addAttribute("books",books);
+
+        if(books.getTotalPages() >1){
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, books.getTotalPages())
+                    .boxed()
+                    .collect(Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
 
         return "book-list";
     }
 
-    @RequestMapping("/bookForm")
+    @PostMapping("books/searchByName")
+    String bookNameList(Model model,
+                        @RequestParam("page") Optional<Integer> page,
+                        @RequestParam("size") Optional<Integer> size,
+                        @RequestParam(defaultValue = "name") String name){
+
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(5);
+
+        Page<Book> books = bookService.getBooksByName(name,PageRequest.of(currentPage-1,pageSize));
+
+        model.addAttribute("books",books);
+
+        if(books.getTotalPages() > 1){
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, books.getTotalPages())
+                    .boxed()
+                    .collect(Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
+
+        return "book-list";
+    }
+
+    @PostMapping("books/searchByAuthor")
+    String bookAuthorList(Model model,
+                          @RequestParam("page") Optional<Integer> page,
+                          @RequestParam("size") Optional<Integer> size,
+                          @RequestParam(defaultValue = "author") String author)
+    {
+
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(5);
+
+
+        Page<Book> books = bookService.getBooksByAuthor(author,PageRequest.of(currentPage-1,pageSize));
+
+        model.addAttribute("books",books);
+
+        if(books.getTotalPages() > 1){
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, books.getTotalPages())
+                    .boxed()
+                    .collect(Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
+
+        return "book-list";
+    }
+
+
+    @GetMapping("books/bookForm")
     String showForm(Model model){
 
         Book book = new Book();
@@ -55,8 +122,18 @@ public class LibraryController {
         return "book-form";
     }
 
+    @GetMapping("books/queryForm")
+    String queryForm(Model model){
 
-    @GetMapping("/bookFormForUpdate")
+        Book book = new Book();
+
+        model.addAttribute("book",book);
+
+        return "book-query";
+    }
+
+
+    @GetMapping("books/bookFormForUpdate")
     String updateForm(@RequestParam("bookId") Long id, Model model){
 
         Book book = bookService.getBookById(id);
@@ -66,7 +143,7 @@ public class LibraryController {
         return "book-form";
     }
 
-    @PostMapping("/save")
+    @PostMapping("books/save")
     String bookSave(@Valid  @ModelAttribute("book") Book book){
 
         bookService.save(book);
@@ -74,7 +151,7 @@ public class LibraryController {
         return "redirect:/books/list";
     }
 
-    @GetMapping("/delete")
+    @GetMapping("books/delete")
     String bookdelete(@RequestParam("bookId") Long id){
 
         Book book = bookService.getBookById(id);

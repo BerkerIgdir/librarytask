@@ -32,7 +32,7 @@ class BookMapperTest {
     @BeforeEach
     void setUp() {
 
-//        book = Book.builder().name("der Steppenwolf").id(1L).build();
+       book = Book.builder().name("die Verwandlung").id(1L).build();
 
         publisherDto = PublisherDto.builder().name("Penguin").build();
 
@@ -73,6 +73,8 @@ class BookMapperTest {
 
     @Test
     void testStackOverflow(){
+
+
 
         Publisher publisher = publisherMapper.toPublisher(publisherDto);
 
